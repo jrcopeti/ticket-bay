@@ -17,6 +17,13 @@ Prefer an editor? VS Code and Cursor open the same box with "Reopen in Container
 
 **The app in the box.** The box is two containers (`compose.yaml`): `app`, where you and the agent work, and `db`, its own Postgres 17. `DATABASE_URL` points at `db:5432`, so `npm run db:migrate`, `npm run db:seed` and `npm run dev` work inside the box. Open http://localhost:3000 on your machine: port 3000 is published on 127.0.0.1 only. Port 3000 taken? Start the box with `BOX_PORT=3100 ./box` and open http://localhost:3100 (a running box keeps its port: to change it, run `docker compose -p <repo-folder>_devcontainer down`, e.g. `ticket-bay_devcontainer`, then `./box` again; the box database survives). Sign-in works on any `BOX_PORT`, but only at `http://localhost:<port>`: Better Auth accepts only the origin in `BETTER_AUTH_URL`, which `compose.yaml` sets to `http://localhost:${BOX_PORT:-3000}`. At `http://127.0.0.1:<port>`, sign-in fails with "Invalid origin" (403). The box database is separate from the one `npm run db:up` starts, and it is not published to your machine.
 
+**Reset the box database.** The box database is the `pg` volume of the box's compose project; a plain `docker compose down -v` in the repo deletes the `npm run db:up` database instead. On your machine, delete the box's volume, then start the box again and reload the data:
+
+```bash
+docker compose -p <repo-folder>_devcontainer down -v     # e.g. ticket-bay_devcontainer
+./box npm run db:migrate && ./box npm run db:seed
+```
+
 **A second clone.** The box's compose project takes its name from the repo folder: `<repo-folder>_devcontainer`. Two clones in folders with the same name (two `ticket-bay` folders) share one project, so `./box` in the second clone fails with "Dev container not found" or uses the first clone's containers. Clone into a folder with another name (`git clone <url> ticket-bay-2`) and give it its own port (`BOX_PORT=3100 ./box`). `COMPOSE_PROJECT_NAME=<name> ./box` works only if you set it on every `./box` call: one call without it, after the box stopped, joins the first clone's project again.
 
 **Playwright MCP in the box.** The image has Playwright MCP 0.0.83's browser and Chromium's system libraries, both installed at build time. The firewall allows no browser downloads, so the version is pinned: `@latest` would ask for a newer browser the box cannot fetch. The box is Linux arm64 on Apple Silicon, where Playwright MCP's default Chrome channel does not exist, so add it with `--browser chromium`:
