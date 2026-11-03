@@ -25,3 +25,6 @@ stryker.changed.json
 
 # The pr-tour skill writes its review pages here
 .pr-review/
+
+# macOS Finder metadata
+.DS_Store
