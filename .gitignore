@@ -25,3 +25,8 @@ stryker.changed.json
 
 # The pr-tour skill writes its review pages here
 .pr-review/
+
+# QuickE2E: a live session, run traces and the crawl map
+quicke2e/auth.json
+quicke2e/runs/
+quicke2e.map.json
