@@ -24,6 +24,8 @@ export const exclude = [
   "**/.claude/worktrees/**",
   // Playwright specs run under their own runner (npm run test:ui).
   "e2e/**",
+  // So do the specs QuickE2E emits into quicke2e/generated.
+  "quicke2e/**",
   "**/.next/**",
 ];
 
