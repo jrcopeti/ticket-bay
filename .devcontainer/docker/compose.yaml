@@ -4,10 +4,9 @@
 # this file with Docker Desktop: its VM shares your home folder.
 services:
   app:
-    # The VM's firewall (init-firewall.sh --engine) blocks the build's apt and browser downloads
-    # on the container network; the build uses the VM's own network instead.
-    build:
-      network: host
+    # Built by `./box --docker`, on the VM's network. Without !reset, Compose would build it on the container network.
+    build: !reset null
+    image: ticketbay-box
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     # The socket belongs to the VM's docker group; ./box reads its id from the VM.
