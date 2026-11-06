@@ -49,7 +49,7 @@ RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 # Playwright MCP, pinned, with its browser downloaded here at build time: the firewall allows no
 # browser downloads, so @latest would ask for a browser the running box cannot fetch.
-# Keep the version in sync with compose.yaml and the `claude mcp add` line in README.md.
+# Keep the version in sync with the `claude mcp add` line in README.md.
 ARG PLAYWRIGHT_MCP_VERSION=0.0.83
 RUN npx --yes @playwright/mcp@${PLAYWRIGHT_MCP_VERSION} install-browser chrome-for-testing
 
