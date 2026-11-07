@@ -1,6 +1,6 @@
 # TicketBay
 
-[![gate](https://github.com/dmoka/ticket-bay/actions/workflows/gate.yml/badge.svg)](https://github.com/dmoka/ticket-bay/actions/workflows/gate.yml)
+[![gate](https://github.com/jrcopeti/ticket-bay/actions/workflows/gate.yml/badge.svg)](https://github.com/jrcopeti/ticket-bay/actions/workflows/gate.yml)
 
 The reference app for the **AI Agent Engineer** course: a small but real ticketing platform — storefront, checkout, order management and an ops dashboard — built so that AI coding agents have something worth breaking.
 
