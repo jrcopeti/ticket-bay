@@ -1,6 +1,0 @@
-batch_id,invoice_no,order_no,date,organizer,organizer_tax_no,customer,event,tickets,discount_pct,net_eur,vat_eur,gross_eur,vat_rate
-INV-2027-01-1,TB-202701-000001,TB-00001,2027-01-03,Park Live Events Kft.,12345678-2-42,Anna Kovács,Summer Night Park Session,1,0,39.37,10.63,50.00,27%
-INV-2027-01-1,TB-202701-000002,TB-00002,2027-01-04,Park Live Events Kft.,12345678-2-42,Bartholomew Featherstonehaugh-Smythe,Summer Night Park Session,4,10,141.73,38.27,180.00,27%
-INV-2027-01-1,TB-202701-000003,TB-00005,2027-01-31,Garage Club,,Punk Fan,Punk Night,2,0,10.00,2.70,12.70,27%
-INV-2027-01-1,TB-202701-000004,TB-00004,2027-01-21,Kisüzem Kulturális Egyesület,18765432-1-42,"Zoé ""Z"" Ürge",Jazz Kisüzem,1,0,0.78,0.21,0.99,27%
-INV-2027-01-1,TB-202701-000005,TB-00003,2027-01-11,Dome Arena Productions Zrt.,45678901-2-43,"Doe, Jane","Gala, ""the big one""",50,0,972100.70,262467.19,1234567.89,27%

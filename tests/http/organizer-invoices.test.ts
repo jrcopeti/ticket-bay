@@ -400,6 +400,16 @@ describe("GET /api/v1/organizer/invoices — files and mail", () => {
     expect(csv).toContain(',"Doe, Jane\nJr","Rock, ""Live""",');
   });
 
+  it("quotes a CSV field that has only a quote, or only a comma, and leaves a plain one bare", async () => {
+    await eventAt(t.db, "park-show", PARK, "Plain Show");
+    await addOrder(t.db, { eventId: "park-show", customerName: 'Zoé "Z" Ürge' });
+    await addOrder(t.db, { eventId: "park-show", customerName: "Doe, Jane" });
+    await invoices();
+    const csv = read(path.join(cwd, "reports", "invoices-2027-01.csv"));
+    expect(csv).toContain(',"Zoé ""Z"" Ürge",Plain Show,');
+    expect(csv).toContain(',"Doe, Jane",Plain Show,');
+  });
+
   it("mails each organizer once per export, to its finance address", async () => {
     await eventAt(t.db, "park-show", PARK);
     await eventAt(t.db, "dome-show", DOME);
