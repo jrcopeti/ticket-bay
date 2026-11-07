@@ -401,6 +401,32 @@ describe("GET /api/v1/organizer/invoices — files and mail", () => {
     expect(rows[0]).toContain("Dome Arena Productions Zrt.");
   });
 
+  it("right-aligns the amounts of the printable copy in 12-character columns", async () => {
+    await eventAt(t.db, "park-show", PARK);
+    await addOrder(t.db, { eventId: "park-show", ticketsCents: 12700, customerName: "Ann" });
+    await invoices();
+    const txt = read(path.join(cwd, "reports", "invoices-2027-01.txt"));
+    expect(txt).toContain("Ann                     2          100.00       27.00      127.00\n");
+    expect(txt).toContain("Total" + " ".repeat(54) + "      100.00       27.00      127.00\n");
+  });
+
+  it("pins current behaviour — suspected bug: an amount under one euro is pushed 2 columns right in the printable copy", async () => {
+    await eventAt(t.db, "park-show", PARK);
+    await addOrder(t.db, { eventId: "park-show", ticketsCents: 99, customerName: "Ann" });
+    await invoices();
+    const txt = read(path.join(cwd, "reports", "invoices-2027-01.txt"));
+    // left("Ann", 24) + left("2", 5), then each amount 13 wide instead of 12
+    expect(txt).toContain("Ann".padEnd(24) + "2".padEnd(5) + "         0.78" + "         0.21" + "         0.99\n");
+  });
+
+  it("pins current behaviour — suspected bug: a customer name over 24 characters is cut with … and runs into the Qty column", async () => {
+    await eventAt(t.db, "park-show", PARK);
+    await addOrder(t.db, { eventId: "park-show", ticketsCents: 12700, customerName: "Bartholomew Featherstonehaugh" });
+    await invoices();
+    const txt = read(path.join(cwd, "reports", "invoices-2027-01.txt"));
+    expect(txt).toContain("Bartholomew Featherston…2    ");
+  });
+
   it("pins current behaviour — suspected bug: an order with 0 cents for its tickets (100% discount) crashes the export with a 500", async () => {
     await eventAt(t.db, "park-show", PARK);
     await addOrder(t.db, { eventId: "park-show", subtotalCents: 5000, discountCents: 5000, ticketsCents: 0 });

@@ -1,0 +1,129 @@
+{
+  "batchId": "INV-2027-01-1",
+  "month": "2027-01",
+  "generatedAt": "2027-02-02T09:30:00.000Z",
+  "organizers": [
+    {
+      "organizer": "Park Live Events Kft.",
+      "email": "finance@parklive.example",
+      "taxNo": "12345678-2-42",
+      "lines": [
+        {
+          "invoiceNo": "TB-202701-000001",
+          "orderId": 1,
+          "orderNumber": "TB-00001",
+          "date": "2027-01-03",
+          "customer": "Anna Kovács",
+          "customerEmail": "fan@example.com",
+          "eventId": "park-summer",
+          "eventName": "Summer Night Park Session",
+          "tickets": 1,
+          "discountPercent": 0,
+          "netCents": 3937,
+          "vatCents": 1063,
+          "grossCents": 5000
+        },
+        {
+          "invoiceNo": "TB-202701-000002",
+          "orderId": 2,
+          "orderNumber": "TB-00002",
+          "date": "2027-01-04",
+          "customer": "Bartholomew Featherstonehaugh-Smythe",
+          "customerEmail": "fan@example.com",
+          "eventId": "park-summer",
+          "eventName": "Summer Night Park Session",
+          "tickets": 4,
+          "discountPercent": 10,
+          "netCents": 14173,
+          "vatCents": 3827,
+          "grossCents": 18000
+        }
+      ],
+      "netCents": 18110,
+      "vatCents": 4890,
+      "grossCents": 23000
+    },
+    {
+      "organizer": "Garage Club",
+      "email": "invoices@ticketbay.example",
+      "taxNo": "",
+      "lines": [
+        {
+          "invoiceNo": "TB-202701-000003",
+          "orderId": 5,
+          "orderNumber": "TB-00005",
+          "date": "2027-01-31",
+          "customer": "Punk Fan",
+          "customerEmail": "fan@example.com",
+          "eventId": "garage-punk",
+          "eventName": "Punk Night",
+          "tickets": 2,
+          "discountPercent": 0,
+          "netCents": 1000,
+          "vatCents": 270,
+          "grossCents": 1270
+        }
+      ],
+      "netCents": 1000,
+      "vatCents": 270,
+      "grossCents": 1270
+    },
+    {
+      "organizer": "Kisüzem Kulturális Egyesület",
+      "email": "hello@kisuzem.example",
+      "taxNo": "18765432-1-42",
+      "lines": [
+        {
+          "invoiceNo": "TB-202701-000004",
+          "orderId": 4,
+          "orderNumber": "TB-00004",
+          "date": "2027-01-21",
+          "customer": "Zoé \"Z\" Ürge",
+          "customerEmail": "fan@example.com",
+          "eventId": "kis-jazz",
+          "eventName": "Jazz Kisüzem",
+          "tickets": 1,
+          "discountPercent": 0,
+          "netCents": 78,
+          "vatCents": 21,
+          "grossCents": 99
+        }
+      ],
+      "netCents": 78,
+      "vatCents": 21,
+      "grossCents": 99
+    },
+    {
+      "organizer": "Dome Arena Productions Zrt.",
+      "email": "settlements@domearena.example",
+      "taxNo": "45678901-2-43",
+      "lines": [
+        {
+          "invoiceNo": "TB-202701-000005",
+          "orderId": 3,
+          "orderNumber": "TB-00003",
+          "date": "2027-01-11",
+          "customer": "Doe, Jane",
+          "customerEmail": "fan@example.com",
+          "eventId": "dome-gala",
+          "eventName": "Gala, \"the big one\"",
+          "tickets": 50,
+          "discountPercent": 0,
+          "netCents": 97210070,
+          "vatCents": 26246719,
+          "grossCents": 123456789
+        }
+      ],
+      "netCents": 97210070,
+      "vatCents": 26246719,
+      "grossCents": 123456789
+    }
+  ],
+  "totals": {
+    "invoices": 5,
+    "netCents": 97229258,
+    "vatCents": 26251900,
+    "grossCents": 123481158
+  },
+  "emailsSent": 4
+}

@@ -1,0 +1,76 @@
+To: finance@parklive.example
+Subject: TicketBay invoices 2027-01 (INV-2027-01-1)
+Date: Tue, 02 Feb 2027 09:30:00 GMT
+
+Dear Park Live Events Kft.,
+
+attached are the ticket invoices TicketBay issued in your name for 2027-01.
+
+  invoices:  2
+  net:             181.10 EUR
+  VAT 27%:          48.90 EUR
+  gross:           230.00 EUR
+
+First invoice: TB-202701-000001, last invoice: TB-202701-000002
+
+Thanks,
+TicketBay Finance
+
+-----
+To: invoices@ticketbay.example
+Subject: TicketBay invoices 2027-01 (INV-2027-01-1)
+Date: Tue, 02 Feb 2027 09:30:00 GMT
+
+Dear Garage Club,
+
+attached are the ticket invoices TicketBay issued in your name for 2027-01.
+
+  invoices:  1
+  net:              10.00 EUR
+  VAT 27%:           2.70 EUR
+  gross:            12.70 EUR
+
+First invoice: TB-202701-000003, last invoice: TB-202701-000003
+
+Thanks,
+TicketBay Finance
+
+-----
+To: hello@kisuzem.example
+Subject: TicketBay invoices 2027-01 (INV-2027-01-1)
+Date: Tue, 02 Feb 2027 09:30:00 GMT
+
+Dear Kisüzem Kulturális Egyesület,
+
+attached are the ticket invoices TicketBay issued in your name for 2027-01.
+
+  invoices:  1
+  net:                0.78 EUR
+  VAT 27%:            0.21 EUR
+  gross:              0.99 EUR
+
+First invoice: TB-202701-000004, last invoice: TB-202701-000004
+
+Thanks,
+TicketBay Finance
+
+-----
+To: settlements@domearena.example
+Subject: TicketBay invoices 2027-01 (INV-2027-01-1)
+Date: Tue, 02 Feb 2027 09:30:00 GMT
+
+Dear Dome Arena Productions Zrt.,
+
+attached are the ticket invoices TicketBay issued in your name for 2027-01.
+
+  invoices:  1
+  net:          972100.70 EUR
+  VAT 27%:      262467.19 EUR
+  gross:       1234567.89 EUR
+
+First invoice: TB-202701-000005, last invoice: TB-202701-000005
+
+Thanks,
+TicketBay Finance
+
+-----
