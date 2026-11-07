@@ -269,6 +269,22 @@ describe("GET /api/v1/organizer/invoices — the shape of the export", () => {
     });
   });
 
+  it.each([
+    ["Budapest Park", "Park Live Events Kft.", "finance@parklive.example", "12345678-2-42"],
+    ["Zamárdi Beach", "Lakeside Festivals Kft.", "accounts@lakeside-fest.example", "23456789-2-14"],
+    ["Hungexpo Hall G", "CraftConf Szervező Kft.", "billing@craftconf.example", "34567890-2-41"],
+    ["MVM Dome", "Dome Arena Productions Zrt.", "settlements@domearena.example", "45678901-2-43"],
+    ["Kisüzem", "Kisüzem Kulturális Egyesület", "hello@kisuzem.example", "18765432-1-42"],
+    ["A38 Ship", "Danube Stage Kft.", "finance@danubestage.example", "56789012-2-43"],
+    ["Opus Jazz Club", "Opus Music Kft.", "office@opusmusic.example", "67890123-2-42"],
+  ])("invoices orders at %s in the name of %s (%s, tax no. %s)", async (venueName, organizer, email, taxNo) => {
+    await eventAt(t.db, "the-show", venueName);
+    await addOrder(t.db, { eventId: "the-show" });
+    const r = await invoices();
+    expect(r.body.organizers).toHaveLength(1);
+    expect(r.body.organizers[0]).toMatchObject({ organizer, email, taxNo });
+  });
+
   it("pins current behaviour — suspected bug: a venue with no known organizer is invoiced in the venue's name, with no tax number, to TicketBay's own address", async () => {
     await eventAt(t.db, "garage-show", UNKNOWN_VENUE);
     await addOrder(t.db, { eventId: "garage-show" });
@@ -419,6 +435,14 @@ describe("GET /api/v1/organizer/invoices — files and mail", () => {
     expect(txt).toContain("Ann".padEnd(24) + "2".padEnd(5) + "         0.78" + "         0.21" + "         0.99\n");
   });
 
+  it("keeps a customer name of exactly 24 characters whole in the printable copy", async () => {
+    await eventAt(t.db, "park-show", PARK);
+    await addOrder(t.db, { eventId: "park-show", ticketsCents: 12700, customerName: "Abcdefghijklmnopqrstuvwx" });
+    await invoices();
+    const txt = read(path.join(cwd, "reports", "invoices-2027-01.txt"));
+    expect(txt).toContain("Abcdefghijklmnopqrstuvwx2    ");
+  });
+
   it("pins current behaviour — suspected bug: a customer name over 24 characters is cut with … and runs into the Qty column", async () => {
     await eventAt(t.db, "park-show", PARK);
     await addOrder(t.db, { eventId: "park-show", ticketsCents: 12700, customerName: "Bartholomew Featherstonehaugh" });
@@ -454,6 +478,44 @@ describe("invoiceExport — the clock and the folder", () => {
     expect(fs.readdirSync(dir).sort()).toEqual(["invoices-2027-01.csv", "invoices-2027-01.txt", "outbox.log"]);
     expect(read(path.join(dir, "outbox.log"))).toContain("Date: " + new Date(NOW).toUTCString());
     expect(lastInvoiceExport).toBe(result);
+  });
+
+  it("logs one line per step: the export with its UTC range and event filter, the count, each mail, the files", async () => {
+    await eventAt(t.db, "park-show", PARK);
+    await eventAt(t.db, "dome-show", DOME);
+    await addOrder(t.db, { eventId: "park-show" });
+    await addOrder(t.db, { eventId: "dome-show" });
+
+    await invoiceExport({ event: null, month: "2027-01" }, { now: () => NOW, reportsDir: cwd });
+    await invoiceExport({ event: "dome-show", month: "2027-01" }, { now: () => NOW, reportsDir: cwd });
+
+    const logged = vi.mocked(console.log).mock.calls.map((c) => c.join(" "));
+    const csv = path.join(cwd, "invoices-2027-01.csv");
+    const txt = path.join(cwd, "invoices-2027-01.txt");
+    expect(logged).toEqual([
+      "[invoices] export 2027-01 (2027-01-01T00:00:00.000Z - 2027-02-01T00:00:00.000Z) event=null",
+      "[invoices] 2 paid orders",
+      `[invoices] wrote ${csv} and ${txt}`,
+      "[invoices] mail -> finance@parklive.example (TicketBay invoices 2027-01 (INV-2027-01-1))",
+      "[invoices] mail -> settlements@domearena.example (TicketBay invoices 2027-01 (INV-2027-01-1))",
+      "[invoices] export 2027-01 (2027-01-01T00:00:00.000Z - 2027-02-01T00:00:00.000Z) event=dome-show",
+      "[invoices] 1 paid orders",
+      `[invoices] wrote ${csv} and ${txt}`,
+      "[invoices] mail -> settlements@domearena.example (TicketBay invoices 2027-01 (INV-2027-01-2))",
+    ]);
+  });
+
+  it("pins current behaviour — suspected bug: when the outbox cannot be written, the export still succeeds and counts the mail as sent", async () => {
+    await eventAt(t.db, "park-show", PARK);
+    await addOrder(t.db, { eventId: "park-show" });
+    fs.mkdirSync(path.join(cwd, "outbox.log")); // a folder where the mail file should be: every append fails
+
+    const result = await invoiceExport({ event: null, month: "2027-01" }, { now: () => NOW, reportsDir: cwd });
+
+    expect(result.emailsSent).toBe(1);
+    expect(fs.existsSync(path.join(cwd, "invoices-2027-01.csv"))).toBe(true);
+    const failure = vi.mocked(console.log).mock.calls.find((c) => c[0] === "[invoices] could not write outbox");
+    expect(failure?.[1]).toMatchObject({ code: "EISDIR" });
   });
 
   it("pins current behaviour — suspected bug: the default month follows the server's time zone, so in Budapest 2027-01-31 23:30 UTC exports February", async () => {
