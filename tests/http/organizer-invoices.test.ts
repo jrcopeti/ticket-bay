@@ -292,6 +292,24 @@ describe("GET /api/v1/organizer/invoices — the shape of the export", () => {
     expect(r.body.organizers[0]).toMatchObject({ organizer: "Garage Club", email: "invoices@ticketbay.example", taxNo: "" });
   });
 
+  it("pins current behaviour — suspected bug: a venue named like a built-in object property (toString) crashes the export with a 500", async () => {
+    await eventAt(t.db, "odd-venue", "toString");
+    await addOrder(t.db, { eventId: "odd-venue" });
+    const r = await invoices();
+    expect(r.status).toBe(500);
+  });
+
+  it("pins current behaviour — suspected bug: a venue named constructor is invoiced as organizer \"Object\", with no address or tax number", async () => {
+    await eventAt(t.db, "odd-venue", "constructor");
+    await addOrder(t.db, { eventId: "odd-venue" });
+    const r = await invoices();
+    expect(r.status).toBe(200);
+    expect(r.body.organizers[0].organizer).toBe("Object");
+    expect(r.body.organizers[0]).not.toHaveProperty("email");
+    expect(r.body.organizers[0]).not.toHaveProperty("taxNo");
+    expect(read(path.join(cwd, "reports", "invoices-2027-01.csv"))).toContain(",Object,undefined,");
+  });
+
   it("describes each invoice line: order number, date, customer, event, tickets", async () => {
     await eventAt(t.db, "park-show", PARK, "Summer Night");
     const id = await addOrder(t.db, {
