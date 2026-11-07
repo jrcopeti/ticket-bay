@@ -498,6 +498,94 @@ describe("invoiceExport — the clock and the folder", () => {
     expect(lastInvoiceExport).toBe(result);
   });
 
+  it("writes one CSV row per invoice: batch, invoice and order numbers, date, seller, customer, event, tickets, discount, net, VAT, gross, rate", async () => {
+    await eventAt(t.db, "park-show", PARK, "Summer Night");
+    await addOrder(t.db, { eventId: "park-show", createdAtMs: MID_JAN, subtotalCents: 20000, discountCents: 2000, ticketsCents: 18000, quantity: 4 });
+
+    const result = await invoiceExport({ event: null, month: "2027-01" }, { now: () => NOW, reportsDir: cwd });
+
+    const no = result.organizers[0]!.lines[0]!.invoiceNo;
+    expect(read(path.join(cwd, "invoices-2027-01.csv")).split("\n").slice(1)).toEqual([
+      `INV-2027-01-1,${no},TB-00001,2027-01-15,Park Live Events Kft.,12345678-2-42,A Fan,Summer Night,4,10,141.73,38.27,180.00,27%`,
+      "",
+    ]);
+  });
+
+  it("prints a title, then one block per seller: its name and tax number, a line per invoice, the totals and the VAT note", async () => {
+    await eventAt(t.db, "park-show", PARK);
+    await eventAt(t.db, "garage-show", UNKNOWN_VENUE);
+    await addOrder(t.db, { eventId: "park-show", ticketsCents: 5000, customerName: "Anna", quantity: 1 });
+    await addOrder(t.db, { eventId: "park-show", ticketsCents: 12700, customerName: "Bea", quantity: 3 });
+    await addOrder(t.db, { eventId: "garage-show", ticketsCents: 1270, customerName: "Cy" });
+
+    const result = await invoiceExport({ event: null, month: "2027-1" }, { now: () => NOW, reportsDir: cwd });
+
+    const [park, garage] = result.organizers.map((g) => g.lines.map((l) => l.invoiceNo));
+    const rule = (c: string) => c.repeat(96);
+    const header = "Invoice".padEnd(20) + "Order".padEnd(10) + "Customer".padEnd(24) + "Qty".padEnd(5) + "         Net         VAT       Gross";
+    expect(read(path.join(cwd, "invoices-2027-01.txt"))).toBe(
+      [
+        "TICKETBAY - ORGANIZER INVOICES 2027-1",
+        "Batch INV-2027-01-1   generated 2027-01-15T08:00:00.000Z",
+        "",
+        rule("="),
+        "Seller: Park Live Events Kft.  (tax no. 12345678-2-42)",
+        rule("="),
+        header,
+        park![0]!.padEnd(20) + "TB-00001  " + "Anna".padEnd(24) + "1    " + "       39.37       10.63       50.00",
+        park![1]!.padEnd(20) + "TB-00002  " + "Bea".padEnd(24) + "3    " + "      100.00       27.00      127.00",
+        rule("-"),
+        "Total".padEnd(59) + "      139.37       37.63      177.00",
+        "VAT 27% included in the gross amounts.",
+        "",
+        rule("="),
+        "Seller: Garage Club",
+        rule("="),
+        header,
+        garage![0]!.padEnd(20) + "TB-00003  " + "Cy".padEnd(24) + "2    " + "       10.00        2.70       12.70",
+        rule("-"),
+        "Total".padEnd(59) + "       10.00        2.70       12.70",
+        "VAT 27% included in the gross amounts.",
+        "",
+        "",
+      ].join("\n"),
+    );
+  });
+
+  it("mails each seller its count, net, VAT and gross, and its first and last invoice number", async () => {
+    await eventAt(t.db, "park-show", PARK);
+    await addOrder(t.db, { eventId: "park-show", ticketsCents: 5000 });
+    await addOrder(t.db, { eventId: "park-show", ticketsCents: 123456789 });
+
+    const result = await invoiceExport({ event: null, month: "2027-01" }, { now: () => NOW, reportsDir: cwd });
+
+    const [first, last] = result.organizers[0]!.lines.map((l) => l.invoiceNo);
+    expect(read(path.join(cwd, "outbox.log"))).toBe(
+      [
+        "To: finance@parklive.example",
+        "Subject: TicketBay invoices 2027-01 (INV-2027-01-1)",
+        "Date: Fri, 15 Jan 2027 08:00:00 GMT",
+        "",
+        "Dear Park Live Events Kft.,",
+        "",
+        "attached are the ticket invoices TicketBay issued in your name for 2027-01.",
+        "",
+        "  invoices:  2",
+        "  net:          972140.07 EUR",
+        "  VAT 27%:      262477.82 EUR",
+        "  gross:       1234617.89 EUR",
+        "",
+        `First invoice: ${first}, last invoice: ${last}`,
+        "",
+        "Thanks,",
+        "TicketBay Finance",
+        "",
+        "-----",
+        "",
+      ].join("\n"),
+    );
+  });
+
   it("logs one line per step: the export with its UTC range and event filter, the count, each mail, the files", async () => {
     await eventAt(t.db, "park-show", PARK);
     await eventAt(t.db, "dome-show", DOME);
