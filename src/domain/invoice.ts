@@ -33,7 +33,7 @@ export function earlyBirdApplies(ev: Pick<Event, "startMs">, nowMs: number): boo
 
 /** The last instant a booking still gets the early-bird discount. */
 export function earlyBirdEndsMs(ev: Pick<Event, "startMs">): number {
-  return ev.startMs - EARLY_BIRD_DAYS * DAY_MS;
+  return ev.startMs - (EARLY_BIRD_DAYS - 1) * DAY_MS;
 }
 
 /**

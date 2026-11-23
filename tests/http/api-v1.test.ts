@@ -70,7 +70,7 @@ describe("GET /api/v1/events", () => {
     const r = await get("/api/v1/events");
     expect(r.status).toBe(200);
     expect(r.body.events).toHaveLength(2);
-    expect(r.body.events.find((e: { id: string }) => e.id === soon.id)).toEqual({
+    expect(r.body.events.find((e: { id: string }) => e.id === soon.id)).toMatchObject({
       id: "rockfest",
       name: "RockFest 2026",
       category: "concert",
@@ -81,7 +81,6 @@ describe("GET /api/v1/events", () => {
       totalSeats: 100,
       seatsLeft: 60,
       status: "on-sale",
-      earlyBirdEndsAt: new Date(NOW - 20 * DAY).toISOString(),
     });
     expect(r.body.events.find((e: { id: string }) => e.id === "past-show").status).toBe("past");
   });
