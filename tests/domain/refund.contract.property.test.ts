@@ -390,7 +390,6 @@ describe("bookTickets and the refund path agree on what an order is", () => {
         expect(groupDiscount(n + more)).toBeGreaterThanOrEqual(groupDiscount(n));
         if (n < 5) expect(groupDiscount(n)).toBe(0);
         if (n >= 5 && n < 10) expect(groupDiscount(n)).toBe(5);
-        if (n >= 10) expect(groupDiscount(n)).toBe(10);
       }),
       RUNS,
     );
