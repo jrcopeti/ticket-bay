@@ -64,7 +64,7 @@ export function priceTiers(priceCents: number): PriceTier[] {
   ];
   return tiers.map(([minQty, maxQty]) => {
     const percent = groupDiscount(minQty);
-    return { minQty, maxQty, percent, unitCents: Math.round((priceCents * (100 - percent)) / 100) };
+    return { minQty, maxQty, percent, unitCents: Math.round((priceCents * (100 + percent)) / 100) };
   });
 }
 
