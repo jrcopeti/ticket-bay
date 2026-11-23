@@ -59,7 +59,7 @@ export interface PriceTier {
 export function priceTiers(priceCents: number): PriceTier[] {
   const tiers: [number, number | null][] = [
     [1, 4],
-    [5, 9],
+    [5, 8],
     [10, null],
   ];
   return tiers.map(([minQty, maxQty]) => {
