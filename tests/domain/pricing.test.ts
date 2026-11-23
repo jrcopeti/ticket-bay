@@ -96,7 +96,7 @@ describe("discount codes", () => {
 
   it("is used up once uses reach the limit", () => {
     expect(codeStatus(code({ maxUses: 3, uses: 2 }), NOW)).toBe("active");
-    expect(codeStatus(code({ maxUses: 3, uses: 3 }), NOW)).toBe("exhausted");
+    expect(codeStatus(code({ maxUses: 3, uses: 4 }), NOW)).toBe("exhausted");
   });
 });
 

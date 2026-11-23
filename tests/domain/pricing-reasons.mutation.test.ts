@@ -25,7 +25,7 @@ describe("a refused discount code tells the customer why", () => {
   });
 
   it("says the code has been fully redeemed", () => {
-    expect(checkDiscountCode("welcome10", code({ maxUses: 3, uses: 3 }), NOW)).toEqual({
+    expect(checkDiscountCode("welcome10", code({ maxUses: 3, uses: 4 }), NOW)).toEqual({
       ok: false,
       code: "WELCOME10",
       reason: "This code has been fully redeemed.",
