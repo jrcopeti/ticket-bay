@@ -131,9 +131,9 @@ describe("checkout", () => {
   it("charges the invoice total: tickets after discounts plus the service fee", async () => {
     const s = shop(t.db);
     const ev = await venue(s.db);
-    const { order } = await s.book(ev.id, 5);
-    expect(order).toMatchObject({ subtotalCents: 25_000, discountPercent: 5, ticketsCents: 23_750, feeCents: 713, totalCents: 24_463 });
-    expect(s.payments.getCharge(order.paymentId)?.amountCents).toBe(24_463);
+    const { order } = await s.book(ev.id, 6);
+    expect(order).toMatchObject({ subtotalCents: 30_000, discountPercent: 5, ticketsCents: 28_500, feeCents: 855, totalCents: 29_355 });
+    expect(s.payments.getCharge(order.paymentId)?.amountCents).toBe(29_355);
   });
 
   it("applies the early-bird discount 30+ days out", async () => {

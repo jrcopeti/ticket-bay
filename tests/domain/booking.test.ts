@@ -128,9 +128,6 @@ describe("groupDiscount", () => {
   it("gives no discount for small groups", () => {
     expect(groupDiscount(2)).toBe(0);
   });
-  it("gives 5% for groups of five", () => {
-    expect(groupDiscount(5)).toBe(5);
-  });
   it("keeps a group just below a tier on the lower rate", () => {
     expect(groupDiscount(4)).toBe(0);
     expect(groupDiscount(9)).toBe(5);

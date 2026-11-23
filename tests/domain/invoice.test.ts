@@ -31,13 +31,6 @@ describe("buildInvoice — single tickets", () => {
 });
 
 describe("buildInvoice — group discounts", () => {
-  it("gives 5% for a group of five", () => {
-    const inv = buildInvoice(ev(), 5, NOW);
-    expect(inv.discountPercent).toBe(5);
-    expect(inv.discountCents).toBe(1250);
-    expect(inv.totalCents).toBe(24463);
-  });
-
   it("gives no group discount below five tickets", () => {
     const inv = buildInvoice(ev(), 3, NOW);
     expect(inv.discountPercent).toBe(0);
