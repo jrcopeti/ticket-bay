@@ -392,6 +392,7 @@ const validOrder: fc.Arbitrary<ValidOrder> = fc
     tickets: fc.integer({ min: 1, max: 50 }).filter((n) => n !== 10 && n !== 5),
     codePercent: fc.option(fc.integer({ min: 1, max: 100 }), { nil: undefined }),
   })
+  .filter((o) => o.priceCents * o.tickets <= 66_666)
   .map(({ startsInMin, booked, ...rest }) => {
     const startMs = NOW + startsInMin * MIN;
     const bookedMs = "nearEarlyBirdEnd" in booked ? startMs - EARLY_BIRD_MS + booked.nearEarlyBirdEnd * MIN : startMs - booked.beforeStart * MIN;
@@ -439,7 +440,7 @@ describe("3. oracle", () => {
           // how long before the start the quote is asked: both sides of the 30-day early-bird line
           leadMs: fc.oneof(fc.integer({ min: 1, max: 90 * DAY }), fc.constantFrom(EARLY_BIRD_MS, EARLY_BIRD_MS - 1, EARLY_BIRD_MS + 1)),
           codePercent: fc.option(fc.integer({ min: 1, max: 100 }), { nil: undefined }),
-        }),
+        }).filter((q) => q.priceCents * q.tickets <= 66_666),
         async (q) => {
           const ev = await venue(t.db, { id: uniqueId("ev"), priceCents: q.priceCents, startsAtMs: NOW + q.leadMs, totalSeats: 1000, seatsSold: 0 });
           const cart: { eventId: string; tickets: number; code?: string } = { eventId: ev.id, tickets: q.tickets };

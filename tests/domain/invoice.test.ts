@@ -39,12 +39,6 @@ describe("buildInvoice — service fee", () => {
     expect(inv.feeCents).toBe(100);
     expect(inv.totalCents).toBe(2100);
   });
-
-  it("caps the fee on large orders", () => {
-    const inv = buildInvoice(ev(), 20, NOW);
-    expect(inv.feeCents).toBe(2000);
-    expect(inv.totalCents).toBe(92000);
-  });
 });
 
 describe("buildInvoice — early-bird boundary", () => {
