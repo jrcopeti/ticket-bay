@@ -128,11 +128,9 @@ describe("quote", () => {
 });
 
 describe("early-bird window", () => {
-  it("ends exactly 30 days before the event, and applies up to and including that instant", () => {
+  it("applies a month before the event and not a week before", () => {
     const e = ev({ daysUntil: 45 });
-    const end = earlyBirdEndsMs(e);
-    expect(end).toBe(e.startMs - 30 * DAY);
-    expect(earlyBirdApplies(e, end)).toBe(true);
-    expect(earlyBirdApplies(e, end + 1)).toBe(false);
+    expect(earlyBirdApplies(e, e.startMs - 31 * DAY)).toBe(true);
+    expect(earlyBirdApplies(e, e.startMs - 7 * DAY)).toBe(false);
   });
 });

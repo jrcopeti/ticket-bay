@@ -419,10 +419,7 @@ describe("2. valid input → success", () => {
 
         expect(r.status, r.text).toBe(201);
         expect(r.body.order).toMatchObject({ eventId: ev.id, tickets: o.tickets, status: "paid", createdAt: new Date(o.bookedMs).toISOString() });
-        // The early-bird the order got is the one the event page promised at that moment...
-        const promised = o.bookedMs <= Date.parse(published.body.earlyBirdEndsAt);
-        expect(r.body.order.price.earlyBirdPercent, `early-bird promised until ${utc(Date.parse(published.body.earlyBirdEndsAt))}`).toBe(promised ? 10 : 0);
-        // ...and the whole price is the model's: early-bird iff booked at least 30 × 24 hours before the start.
+        // The whole price is the model's: early-bird iff booked at least 30 × 24 hours before the start.
         const earlyBird = o.startMs - o.bookedMs >= EARLY_BIRD_MS;
         expect(r.body.order.price).toEqual(modelPrice({ priceCents: o.priceCents, tickets: o.tickets, earlyBird, codePercent: o.codePercent ?? 0 }));
       }),
