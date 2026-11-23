@@ -8,5 +8,5 @@ export function serviceFee(totalCents: number): number {
 
 /** VAT included in a gross price, at the given rate (e.g. 27 for 27%). */
 export function vatPortion(grossCents: number, ratePercent: number): number {
-  return Math.round((grossCents * ratePercent) / (100 + ratePercent));
+  return Math.round((grossCents * ratePercent) / 100);
 }

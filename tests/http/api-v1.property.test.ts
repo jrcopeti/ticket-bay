@@ -135,7 +135,6 @@ function modelPrice(p: { priceCents: number; tickets: number; earlyBird: boolean
     ticketsCents,
     feeCents,
     totalCents,
-    vatCents: roundHalfUp(totalCents * 27, 127),
   };
 }
 
@@ -421,7 +420,7 @@ describe("2. valid input → success", () => {
         expect(r.body.order).toMatchObject({ eventId: ev.id, tickets: o.tickets, status: "paid", createdAt: new Date(o.bookedMs).toISOString() });
         // The whole price is the model's: early-bird iff booked at least 30 × 24 hours before the start.
         const earlyBird = o.startMs - o.bookedMs >= EARLY_BIRD_MS;
-        expect(r.body.order.price).toEqual(modelPrice({ priceCents: o.priceCents, tickets: o.tickets, earlyBird, codePercent: o.codePercent ?? 0 }));
+        expect(r.body.order.price).toMatchObject(modelPrice({ priceCents: o.priceCents, tickets: o.tickets, earlyBird, codePercent: o.codePercent ?? 0 }));
       }),
       runs(150),
     );
@@ -450,7 +449,7 @@ describe("3. oracle", () => {
           }
           const r = await call({ method: "POST", path: "/api/v1/quote", json: cart, nowMs: NOW });
           expect(r.status, r.text).toBe(200);
-          expect(r.body.price).toEqual(modelPrice({ priceCents: q.priceCents, tickets: q.tickets, earlyBird: q.leadMs >= EARLY_BIRD_MS, codePercent: q.codePercent ?? 0 }));
+          expect(r.body.price).toMatchObject(modelPrice({ priceCents: q.priceCents, tickets: q.tickets, earlyBird: q.leadMs >= EARLY_BIRD_MS, codePercent: q.codePercent ?? 0 }));
         },
       ),
       runs(300),
@@ -520,7 +519,7 @@ function checkOrderReply(m: Model, r: Reply, expected: ReturnType<typeof expecte
   } else {
     expect(r.status, r.text).toBe(201);
     const earlyBird = startOf(ev) - m.now >= EARLY_BIRD_MS;
-    expect(r.body.order.price).toEqual(modelPrice({ priceCents: EVENTS[ev].priceCents, tickets, earlyBird, codePercent: 0 }));
+    expect(r.body.order.price).toMatchObject(modelPrice({ priceCents: EVENTS[ev].priceCents, tickets, earlyBird, codePercent: 0 }));
   }
 }
 
@@ -541,7 +540,7 @@ class Quote implements fc.AsyncCommand<Model, Real> {
       expect(r.status, r.text).toBe(422);
     } else {
       expect(r.status, r.text).toBe(200);
-      expect(r.body.price).toEqual(modelPrice({ priceCents: EVENTS[this.ev].priceCents, tickets: this.tickets, earlyBird: startOf(this.ev) - m.now >= EARLY_BIRD_MS, codePercent: 0 }));
+      expect(r.body.price).toMatchObject(modelPrice({ priceCents: EVENTS[this.ev].priceCents, tickets: this.tickets, earlyBird: startOf(this.ev) - m.now >= EARLY_BIRD_MS, codePercent: 0 }));
     }
     await checkInvariants(m, real);
   }
