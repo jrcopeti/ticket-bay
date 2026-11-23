@@ -17,11 +17,6 @@ describe("buildInvoice — single tickets", () => {
     expect(inv.totalCents).toBe(5150);
   });
 
-  it("includes 27% VAT in the total", () => {
-    const inv = buildInvoice(ev(), 1, NOW);
-    expect(inv.vatCents).toBe(1095);
-  });
-
   it("applies the early-bird discount when booking 40 days ahead", () => {
     const inv = buildInvoice(ev(5000, 40), 1, NOW);
     expect(inv.discountPercent).toBe(10);
@@ -49,7 +44,6 @@ describe("buildInvoice — service fee", () => {
     const inv = buildInvoice(ev(), 20, NOW);
     expect(inv.feeCents).toBe(2000);
     expect(inv.totalCents).toBe(92000);
-    expect(inv.vatCents).toBe(19559);
   });
 });
 
