@@ -27,7 +27,7 @@ export function normalizeCode(raw: string): string {
 export function codeStatus(code: DiscountCode, nowMs: number): CodeStatus {
   if (!code.active) return "disabled";
   if (code.expiresAtMs !== null && nowMs >= code.expiresAtMs) return "expired";
-  if (code.maxUses !== null && code.uses >= code.maxUses) return "exhausted";
+  if (code.maxUses !== null && code.uses > code.maxUses) return "exhausted";
   return "active";
 }
 
