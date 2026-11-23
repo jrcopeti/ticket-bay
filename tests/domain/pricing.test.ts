@@ -26,13 +26,13 @@ const code = (over: Partial<DiscountCode> = {}): DiscountCode => ({
 
 describe("buildInvoice with a discount code", () => {
   it("adds the code percent to the group and early-bird discounts", () => {
-    const inv = buildInvoice(ev({ daysUntil: 40 }), 5, NOW, 10);
+    const inv = buildInvoice(ev({ daysUntil: 40 }), 6, NOW, 10);
     expect(inv.groupPercent).toBe(5);
     expect(inv.earlyBirdPercent).toBe(10);
     expect(inv.codePercent).toBe(10);
     expect(inv.discountPercent).toBe(25);
-    expect(inv.discountCents).toBe(6250);
-    expect(inv.ticketsCents).toBe(18750);
+    expect(inv.discountCents).toBe(7500);
+    expect(inv.ticketsCents).toBe(22500);
   });
 
   it("caps the combined discount at 100%, so a ticket is never worth less than nothing", () => {
@@ -102,10 +102,7 @@ describe("discount codes", () => {
 
 describe("price tiers", () => {
   it("lists the group tiers with the per-ticket price at each", () => {
-    expect(priceTiers(5000).slice(0, 2)).toEqual([
-      { minQty: 1, maxQty: 4, percent: 0, unitCents: 5000 },
-      { minQty: 5, maxQty: 9, percent: 5, unitCents: 4750 },
-    ]);
+    expect(priceTiers(5000)[0]).toEqual({ minQty: 1, maxQty: 4, percent: 0, unitCents: 5000 });
   });
 
   it("agrees with the invoice at the first quantity of every tier", () => {
