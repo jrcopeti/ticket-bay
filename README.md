@@ -20,7 +20,7 @@ stay open, so those bugs are still planted.
 | Group of five | 5 tickets get no group discount | [PR-02](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
 | Early-bird end | The event page promises the early-bird a day longer than checkout gives it | [PR-03](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
 | VAT on top | The invoice shows 27% of the total as VAT, not the 27% included in it | [PR-04](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
-| Fee cap | Service fees above the €20 cap | [PR-05](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
+| Fee cap | 6 tickets at €149.00 are charged a €25.48 service fee, above the €20 maximum | [PR-05](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
 | Code used once too often | A code limited to 40 uses works 41 times | [PR-06](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
 | Tier table gap | The price table has no row for 9 tickets | [PR-07](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
 | Tier price up | The table's group prices are above the single price | [PR-08](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
