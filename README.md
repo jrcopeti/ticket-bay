@@ -2,6 +2,39 @@
 
 [![gate](https://github.com/dmoka/ticket-bay/actions/workflows/gate.yml/badge.svg)](https://github.com/dmoka/ticket-bay/actions/workflows/gate.yml)
 
+## This fork has a bot that fixes its bugs
+
+An AI agent, [ticket-bay-bot](https://github.com/jrcopeti/ticket-bay-bot), works on this fork. Every
+morning it reads one bug report that a customer emailed in, finds the bug, fixes it and opens a pull
+request with a test that would have caught it. Its pull requests come from `ticket-bay-bot[bot]`.
+It doesn't merge: the owner reads each one and decides.
+
+To give it real work, `main` carries eight planted bugs, each a small mistake in `src/domain/` that
+the fork's tests no longer catch. Each bug has an email that describes what a customer saw, never the
+cause. The bot's pull request for each one is linked below. Three of the fixes are merged and five
+stay open, so those bugs are still planted.
+
+| Bug | What the customer sees | The bot's fix |
+|---|---|---|
+| Group of ten | 10 tickets get 5% off, not 10% | [PR-01](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
+| Group of five | 5 tickets get no group discount | [PR-02](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
+| Early-bird end | The event page promises the early-bird a day longer than checkout gives it | [PR-03](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
+| VAT on top | The invoice shows 27% of the total as VAT, not the 27% included in it | [PR-04](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
+| Fee cap | 6 tickets at €149.00 are charged a €25.48 service fee, above the €20 maximum | [PR-05](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
+| Code used once too often | A code limited to 40 uses works 41 times | [PR-06](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
+| Tier table gap | The price table has no row for 9 tickets | [PR-07](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
+| Tier price up | The table's group prices are above the single price | [PR-08](https://github.com/jrcopeti/ticket-bay/pull/TBD) |
+
+`main` is protected by a ruleset: every change goes through a pull request, nobody can force-push or
+delete it, and all six CI checks must pass. Only the owner can bypass the
+ruleset, which is how the bugs were planted; the bot can't.
+
+The bot runs on a server of its own. How it's built, what can go wrong and which controls stop it
+are in its repo: [ticket-bay-bot](https://github.com/jrcopeti/ticket-bay-bot) and its
+[threat model](https://github.com/jrcopeti/ticket-bay-bot/blob/main/docs/threat-model.md).
+
+---
+
 The reference app for the **AI Agent Engineer** course: a small but real ticketing platform — storefront, checkout, order management and an ops dashboard — built so that AI coding agents have something worth breaking.
 
 - **Stack:** Next.js (App Router, server actions), TypeScript, Postgres 17 via Drizzle ORM + node-postgres (`pg`), shadcn/ui, Recharts. Docker runs the database locally (docker-compose) and in tests (Testcontainers).
